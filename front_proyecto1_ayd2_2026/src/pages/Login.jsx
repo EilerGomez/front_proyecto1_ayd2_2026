@@ -89,7 +89,7 @@ return (
 
                 <button
                   type="button"
-                  onClick={() => navigate("/crear-cuenta")} // de momento manda a crear cuenta como pediste
+                  onClick={() => navigate("/recuperar-contrasenia")} 
                   className="text-white/50 hover:text-white/80 underline underline-offset-4"
                 >
                   Recuperar contraseña

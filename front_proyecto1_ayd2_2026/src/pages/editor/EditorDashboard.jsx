@@ -135,6 +135,17 @@ export default function EditorDashboard() {
           </NavLink>
 
           <NavLink
+            to="/app/editor/reportes"
+            className={({ isActive }) =>
+              "list-group-item list-group-item-action d-flex align-items-center gap-2 " +
+              (isActive ? "active" : "")
+            }
+          >
+            <i className="bi bi-graph-up-arrow"></i>
+            {!collapsed && "Reportes"}
+          </NavLink>
+
+          <NavLink
             to="/app/editor/billetera"
             className={({ isActive }) =>
               "list-group-item list-group-item-action d-flex align-items-center gap-2 " +

@@ -58,6 +58,18 @@ import PerfilPublicPage from "../pages/suscriptor/PerfilPublicPage";
 import RevistaEdicionesSuscriptorPage from "../pages/suscriptor/RevistaEdicionesSuscriptorPage";
 import {CrearCuenta} from "../pages/CrearCuenta";
 
+import RecuperarContrasenia from "../pages/RecuperarContrasenia";
+import ReporteGananciasPage from "../pages/admin/reportes/ReporteGananciasPage";
+import ReporteAnunciosCompradosPage from "../pages/admin/reportes/ReporteAnunciosCompradosPage";
+import ReporteGananciasAnunciantesPage from "../pages/admin/reportes/ReporteGananciasAnunciantesPage";
+import ReporteTopRevistasPage from "../pages/admin/reportes/ReporteTopRevistasPage";
+import ReporteTopComentadasPage from "../pages/admin/reportes/ReporteTopComentadasPage";
+import ReporteEfectividadAnunciosPage from "../pages/admin/reportes/ReporteEfectividadAnunciosPage";
+
+import ReporteComentariosEditorPage from "../pages/editor/reportes/ReporteComentariosEditorPage";
+import ReporteSuscripcionesEditorPage from "../pages/editor/reportes/ReporteSuscripcionesEditorPage";
+import ReporteLikesTopEditorPage from "../pages/editor/reportes/ReporteLikesTopEditorPage";
+import ReportePagosEditorPage from "../pages/editor/reportes/ReportePagosEditorPage";
 export default function AppRouter() {
   const authed = isAuthenticated();
 
@@ -68,7 +80,8 @@ export default function AppRouter() {
       <Route path="/login" element={<Login />} />
       <Route path="/forbidden" element={<Forbidden />} />
       <Route path="/crear-cuenta" element={<CrearCuenta />} />
-      
+      <Route path="/recuperar-contrasenia" element={<RecuperarContrasenia />} />
+
       {/* Protegidas */}
       <Route element={<PrivateRoute />}>
         {/* /app SOLO redirige según rol */}
@@ -101,9 +114,16 @@ export default function AppRouter() {
             <Route path="anuncios" element={<AdminAnunciosPage />} />
             <Route path="anuncios/:id" element={<AnuncianteAnuncioDetail />} />
             <Route path="anuncios/:id/pagos" element={<PagosAnuncioDetallePage />} />  
-
-
-
+                       
+            
+            
+            <Route path="reportes" element={<AdminHome />} />
+            <Route path="reportes/ganancias-revistas" element={<ReporteGananciasPage />} />
+            <Route path="reportes/anuncios-comprados" element={<ReporteAnunciosCompradosPage />}/>
+            <Route path="reportes/ganancias-por-anunciante" element={<ReporteGananciasAnunciantesPage />}/>
+            <Route path="reportes/top-5-revistas-populares" element={<ReporteTopRevistasPage />}/>
+            <Route path="reportes/top-5-revistas-comentadas" element={<ReporteTopComentadasPage />}/>
+            <Route path="/app/admin/reportes/efectividad-anuncios" element={<ReporteEfectividadAnunciosPage />}/>
           </Route>
         </Route>
 
@@ -135,10 +155,13 @@ export default function AppRouter() {
             <Route path="perfil" element={<PerfilUser />} />
 
             {/* reportes */}
-            <Route path="reportes/comentarios" element={<div>Reporte Comentarios (pendiente)</div>} />
-            <Route path="reportes/suscripciones" element={<div>Reporte Suscripciones (pendiente)</div>} />
-            <Route path="reportes/top-gustadas" element={<div>Top Gustadas (pendiente)</div>} />
-            <Route path="reportes/pagos" element={<div>Reporte Pagos (pendiente)</div>} />
+
+\
+            <Route path="reportes" element={<EditorHome/>} />
+            <Route path="reportes/comentarios" element={<ReporteComentariosEditorPage/>} />
+            <Route path="reportes/suscripciones" element={<ReporteSuscripcionesEditorPage/>} />
+            <Route path="reportes/top-gustadas" element={<ReporteLikesTopEditorPage/>} />
+            <Route path="reportes/pagos" element={<ReportePagosEditorPage/>} />
           </Route>
         </Route>
 
