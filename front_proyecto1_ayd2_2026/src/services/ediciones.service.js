@@ -6,8 +6,6 @@ export async function getEdicionesByRevistaId(revistaId) {
 }
 
 export async function createEdicion(payload) {
-  // OJO: tu EdicionRequest no lo pegaste, ajustá nombres si cambia
-  // Ejemplo típico: { revistaId, numeroEdicion, titulo, pdfUrl, fechaPublicacion }
   const { data } = await http.post("/v1/ediciones", payload);
   return data;
 }

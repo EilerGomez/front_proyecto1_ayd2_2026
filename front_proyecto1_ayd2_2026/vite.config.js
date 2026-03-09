@@ -6,4 +6,14 @@ export default defineConfig({
   resolve: {
     dedupe: ["react", "react-dom"],
   },
+    test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./src/tests/setup.js",
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html"],
+      reportsDirectory: "./coverage",
+    },
+  }
 });
