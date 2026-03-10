@@ -61,10 +61,21 @@ function getEmbedInfo(rawUrl) {
       const u = new URL(url);
       let id = "";
 
-      if (u.hostname.includes("youtu.be")) id = u.pathname.replace("/", "").trim();
-      else if (u.pathname === "/watch") id = u.searchParams.get("v") ?? "";
-      else if (u.pathname.startsWith("/shorts/")) id = u.pathname.split("/shorts/")[1]?.split("?")[0]?.trim() ?? "";
-      else if (u.pathname.startsWith("/embed/")) return { type: "iframe", src: url, provider: "YouTube" };
+      if (u.hostname === "youtu.be") {
+        id = u.pathname.slice(1).trim();
+      } else if (
+        u.hostname === "www.youtube.com" ||
+        u.hostname === "youtube.com" ||
+        u.hostname === "m.youtube.com"
+      ) {
+        if (u.pathname === "/watch") {
+          id = u.searchParams.get("v") || "";
+        } else if (u.pathname.startsWith("/shorts/")) {
+          id = u.pathname.split("/shorts/")[1]?.split("/")[0]?.split("?")[0] || "";
+        } else if (u.pathname.startsWith("/embed/")) {
+          id = u.pathname.split("/embed/")[1]?.split("/")[0]?.split("?")[0] || "";
+        }
+      }
 
       const embed = id ? `https://www.youtube.com/embed/${id}` : "";
       return embed ? { type: "iframe", src: embed, provider: "YouTube" } : { type: "link" };
@@ -162,12 +173,18 @@ function CardPreview({ a }) {
       ) : info.type === "iframe" ? (
         <div>
           <div className="ratio ratio-16x9">
-            <iframe
-              src={info.src}
-              title={`embed-${a.id}`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+              <iframe
+                src={
+                  info.provider === "YouTube"
+                    ? `${info.src}?origin=${encodeURIComponent(window.location.origin)}&rel=0`
+                    : info.src
+                }
+                title={`embed-${a.id}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
+                style={{ border: 0 }}
+              />
           </div>
           <div className="text-muted small mt-1">
             <i className="bi bi-play-btn me-1" />

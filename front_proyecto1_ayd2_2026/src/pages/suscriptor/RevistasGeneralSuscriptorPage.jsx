@@ -93,26 +93,42 @@ function resolveMediaUrl(url) {
 function extractYouTubeId(u) {
     try {
         const url = new URL(u);
-        if (url.hostname.includes("youtu.be")) return url.pathname.replace("/", "");
-        if (url.hostname.includes("youtube.com")) {
-            if (url.searchParams.get("v")) return url.searchParams.get("v");
-            const parts = url.pathname.split("/").filter(Boolean);
-            const idx = parts.indexOf("embed");
-            if (idx >= 0 && parts[idx + 1]) return parts[idx + 1];
-            const idx2 = parts.indexOf("shorts");
-            if (idx2 >= 0 && parts[idx2 + 1]) return parts[idx2 + 1];
+
+        if (url.hostname === "youtu.be") {
+            return url.pathname.slice(1).trim();
         }
-    } catch (e) { console.log(e) }
+
+        if (
+            url.hostname === "www.youtube.com" ||
+            url.hostname === "youtube.com" ||
+            url.hostname === "m.youtube.com"
+        ) {
+            if (url.pathname === "/watch") {
+                return url.searchParams.get("v");
+            }
+
+            if (url.pathname.startsWith("/embed/")) {
+                return url.pathname.split("/embed/")[1]?.split("/")[0]?.split("?")[0] || null;
+            }
+
+            if (url.pathname.startsWith("/shorts/")) {
+                return url.pathname.split("/shorts/")[1]?.split("/")[0]?.split("?")[0] || null;
+            }
+        }
+    } catch (e) {
+        console.log(e);
+    }
+
     return null;
 }
 
 function buildEmbedUrl(originalUrl) {
-    const url = String(originalUrl || "");
+    const url = String(originalUrl || "").trim();
     if (!url) return "";
 
     const yid = extractYouTubeId(url);
     if (yid) {
-        return `https://www.youtube.com/embed/${yid}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist=${yid}`;
+        return `https://www.youtube.com/embed/${yid}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist=${yid}&origin=${encodeURIComponent(window.location.origin)}`;
     }
 
     if (url.includes("facebook.com") || url.includes("fb.watch")) {
@@ -310,10 +326,11 @@ function AdsPanel({ title = "Publicidad", current, idxLabel, onNext, onRefresh, 
                                             width: "100%",
                                             height: "100%",
                                             border: 0,
-                                            pointerEvents: "none", // bloquea pausar
+                                            pointerEvents: "none",
                                         }}
-                                        allow="autoplay; encrypted-media; picture-in-picture"
+                                        allow="autoplay; encrypted-media; picture-in-picture; web-share"
                                         allowFullScreen
+                                        referrerPolicy="strict-origin-when-cross-origin"
                                     />
                                 )}
                             </div>
