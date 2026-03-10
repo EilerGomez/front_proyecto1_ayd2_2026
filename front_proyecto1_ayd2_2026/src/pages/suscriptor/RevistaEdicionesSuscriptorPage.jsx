@@ -918,11 +918,24 @@ export default function RevistaEdicionesSuscriptorPage() {
                                                     <div className="mt-3">
                                                         {e.pdfUrl ? (
                                                             <>
-                                                                <div className="ratio ratio-16x9 border rounded">
-                                                                    <iframe src={e.pdfUrl} title={`PDF ${e.titulo}`} style={{ border: 0 }} loading="lazy" />
+                                                                <div
+                                                                    className="border rounded overflow-hidden"
+                                                                    style={{ width: "100%", height: "900px" }}
+                                                                >
+                                                                    <iframe
+                                                                        src={e.pdfUrl}
+                                                                        title={`PDF ${e.titulo}`}
+                                                                        style={{ width: "100%", height: "100%", border: 0 }}
+                                                                        loading="lazy"
+                                                                    />
                                                                 </div>
-
-                                                                
+{/* Este es un comentario dentro de JSX 
+                                                                <div className="mt-2">
+                                                                    <a href={e.pdfUrl} target="_blank" rel="noreferrer">
+                                                                        Abrir en nueva pestaña <i className="bi bi-box-arrow-up-right ms-1"></i>
+                                                                    </a>
+                                                                </div>
+*/}
                                                             </>
                                                         ) : (
                                                             <div className="text-muted">Sin PDF.</div>
