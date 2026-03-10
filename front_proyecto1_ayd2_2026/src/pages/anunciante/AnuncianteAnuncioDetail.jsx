@@ -17,27 +17,27 @@ function isYouTubeUrl(url) {
 function getYouTubeEmbedUrl(url) {
   try {
     const u = new URL(url);
+    let id = "";
 
-    if (u.hostname.includes("youtu.be")) {
-      const id = u.pathname.replace("/", "").trim();
-      return id ? `https://www.youtube.com/embed/${id}` : "";
+    if (u.hostname === "youtu.be") {
+      id = u.pathname.slice(1).trim();
+    } else if (
+      u.hostname === "www.youtube.com" ||
+      u.hostname === "youtube.com" ||
+      u.hostname === "m.youtube.com"
+    ) {
+      if (u.pathname === "/watch") {
+        id = u.searchParams.get("v") || "";
+      } else if (u.pathname.startsWith("/shorts/")) {
+        id = u.pathname.split("/shorts/")[1]?.split("/")[0]?.split("?")[0] || "";
+      } else if (u.pathname.startsWith("/embed/")) {
+        id = u.pathname.split("/embed/")[1]?.split("/")[0]?.split("?")[0] || "";
+      }
     }
 
-    if (u.hostname.includes("youtube.com") && u.pathname === "/watch") {
-      const id = u.searchParams.get("v");
-      return id ? `https://www.youtube.com/embed/${id}` : "";
-    }
+    if (!id) return "";
 
-    if (u.hostname.includes("youtube.com") && u.pathname.startsWith("/shorts/")) {
-      const id = u.pathname.split("/shorts/")[1]?.split("?")[0]?.trim();
-      return id ? `https://www.youtube.com/embed/${id}` : "";
-    }
-
-    if (u.hostname.includes("youtube.com") && u.pathname.startsWith("/embed/")) {
-      return url;
-    }
-
-    return "";
+    return `https://www.youtube.com/embed/${id}`;
   } catch {
     return "";
   }
@@ -172,10 +172,12 @@ export default function AnuncianteAnuncioDetail() {
                     ytEmbed ? (
                       <div className="ratio ratio-16x9">
                         <iframe
-                          src={ytEmbed}
+                          src={`${ytEmbed}?origin=${encodeURIComponent(window.location.origin)}&rel=0`}
                           title={`yt-${a.id}`}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          style={{ border: 0 }}
                         />
                       </div>
                     ) : (
