@@ -920,7 +920,7 @@ export default function RevistaEdicionesSuscriptorPage() {
                                                             <>
                                                                 <div
                                                                     className="border rounded overflow-hidden"
-                                                                    style={{ width: "100%", height: "900px" }}
+                                                                    style={{ width: "100%", height: "700px" }}
                                                                 >
                                                                     <iframe
                                                                         src={e.pdfUrl}
