@@ -436,7 +436,7 @@ export default function RevistasPage() {
       <div className="d-flex align-items-center justify-content-between mb-3">
         <div>
           <h1 className="h4 mb-0">Mis revistas</h1>
-          <div className="text-muted small">Se ven como publicaciones (tipo feed).</div>
+          <div className="text-muted small">Administra tus revistas, crea, publica, hazte famoso.</div>
         </div>
 
         <Link to="/app/editor/revistas/nueva" className="btn btn-primary">
