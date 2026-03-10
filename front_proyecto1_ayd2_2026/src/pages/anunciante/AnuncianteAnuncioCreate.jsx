@@ -262,10 +262,12 @@ export default function AnuncianteAnuncioCreate() {
                     ytEmbed ? (
                       <div className="ratio ratio-16x9">
                         <iframe
-                          src={ytEmbed}
+                          src={`${ytEmbed}?origin=${encodeURIComponent(window.location.origin)}&rel=0`}
                           title="YouTube preview"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          style={{ border: 0 }}
                         />
                       </div>
                     ) : (
