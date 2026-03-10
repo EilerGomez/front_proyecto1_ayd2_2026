@@ -55,24 +55,29 @@ function getEmbedInfo(rawUrl) {
     const url = safeUrl(rawUrl);
     if (!url) return { type: "none" };
 
-    // Direct file
-    if (looksLikeDirectVideoFile(url)) return { type: "direct", src: url };
+    if (looksLikeDirectVideoFile(url)) {
+        return { type: "direct", src: url };
+    }
 
-    // YouTube
     if (url.includes("youtu.be/") || url.includes("youtube.com/")) {
         try {
             const u = new URL(url);
             let id = "";
 
-            if (u.hostname.includes("youtu.be")) {
-                id = u.pathname.replace("/", "").trim();
-            } else if (u.pathname === "/watch") {
-                id = u.searchParams.get("v") ?? "";
-            } else if (u.pathname.startsWith("/shorts/")) {
-                id = u.pathname.split("/shorts/")[1]?.split("?")[0]?.trim() ?? "";
-            } else if (u.pathname.startsWith("/embed/")) {
-                // already embed
-                return { type: "iframe", src: url, provider: "YouTube" };
+            if (u.hostname === "youtu.be") {
+                id = u.pathname.slice(1).trim();
+            } else if (
+                u.hostname === "www.youtube.com" ||
+                u.hostname === "youtube.com" ||
+                u.hostname === "m.youtube.com"
+            ) {
+                if (u.pathname === "/watch") {
+                    id = u.searchParams.get("v") || "";
+                } else if (u.pathname.startsWith("/shorts/")) {
+                    id = u.pathname.split("/shorts/")[1]?.split("/")[0]?.split("?")[0] || "";
+                } else if (u.pathname.startsWith("/embed/")) {
+                    id = u.pathname.split("/embed/")[1]?.split("/")[0]?.split("?")[0] || "";
+                }
             }
 
             const embed = id ? `https://www.youtube.com/embed/${id}` : "";
@@ -82,7 +87,6 @@ function getEmbedInfo(rawUrl) {
         }
     }
 
-    // Vimeo
     if (url.includes("vimeo.com/")) {
         try {
             const u = new URL(url);
@@ -95,32 +99,23 @@ function getEmbedInfo(rawUrl) {
         }
     }
 
-    // Facebook video (mejor si es URL de video público)
-    // Usamos plugin embed de Facebook (necesita que el video sea público / embebible)
     if (url.includes("facebook.com/") || url.includes("fb.watch/")) {
         const embed = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&width=560`;
         return { type: "iframe", src: embed, provider: "Facebook" };
     }
 
-    // TikTok (embed)
     if (url.includes("tiktok.com/")) {
-        // TikTok permite oEmbed/embeds pero puede bloquear por CSP en algunos casos.
-        // Igual probamos iframe a la URL de embed.
         const embed = url.includes("/embed")
             ? url
             : url.replace("www.tiktok.com", "www.tiktok.com/embed");
         return { type: "iframe", src: embed, provider: "TikTok" };
     }
 
-    // Instagram Reels (embed)
     if (url.includes("instagram.com/")) {
-        // Instagram embed suele requerir que sea público y a veces bloquea.
-        // Probamos embed clásico:
         const embed = `${url}${url.includes("?") ? "&" : "?"}utm_source=ig_embed`;
         return { type: "iframe", src: embed, provider: "Instagram" };
     }
 
-    // Default: intentar iframe genérico (a veces funciona si el sitio permite embed)
     return { type: "iframe", src: url, provider: "Enlace" };
 }
 
@@ -197,10 +192,16 @@ function CardPreview({ a }) {
                 <div>
                     <div className="ratio ratio-16x9">
                         <iframe
-                            src={info.src}
+                            src={
+                                info.provider === "YouTube"
+                                    ? `${info.src}?origin=${encodeURIComponent(window.location.origin)}&rel=0`
+                                    : info.src
+                            }
                             title={`embed-${a.id}`}
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowFullScreen
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            style={{ border: 0 }}
                         />
                     </div>
                     <div className="text-muted small mt-1">
